@@ -1,0 +1,9 @@
+.textContain {
+    display: flex;
+    align-items: center;
+}
+
+.completed {
+    text-decoration: line-through;
+    color: #8ce08c;
+}
