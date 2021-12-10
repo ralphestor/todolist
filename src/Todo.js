@@ -42,7 +42,7 @@ class Todo extends Component {
         })
     }
     handleUpdate(evt) {
-        evt.preventDefault();git 
+        evt.preventDefault();
         this.props.updateTodo(this.props.id, this.state.todo);
         this.setState({ isEditing: false });
     }
