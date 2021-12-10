@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -11,50 +11,38 @@ import Todo from './Todo';
 
 
 
-class TodoApp extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            todos: []
-        }
-        this.create = this.create.bind(this);
-        this.remove = this.remove.bind(this);
-        this.update = this.update.bind(this);
-        this.toggleComplete = this.toggleComplete.bind(this);
+function TodoApp() {
+    const [todos, setTodos] = useState([]);
+
+    function remove(id) {
+        setTodos(todos.filter(t => t.id !== id));
     }
-    create(newTodo) {
-        this.setState({
-            todos: [...this.state.todos, newTodo]
-        })
+
+    function create(newTodo) {
+        setTodos([ ...todos, newTodo ])
     }
-    remove(id) {
-        this.setState({
-            todos: this.state.todos.filter(t => t.id !== id)
-        })
-    }
-    update(id, updatedTask) {
-        const updatedTodos = this.state.todos.map( t => {
+
+    function update(id, updatedTask) {
+        const updatedTodos = todos.map( t => {
             if(id === t.id) {
                 return { ...t, todo: updatedTask }
             }
             return t;
         })
-        this.setState({ todos: updatedTodos })
+        setTodos(updatedTodos);
     }
 
-    toggleComplete(id){
-        const updatedTodo = this.state.todos.map(t => {
+    function toggleComplete(id){
+        const updatedTodo = todos.map(t => {
             if(id === t.id) {
-                return { ...t, completed: !t.completed}
+                return { ...t, completed: !t.completed }
             }
             return t;
         })
-        this.setState({ todos: updatedTodo })
+        setTodos(updatedTodo);
     }
 
-
-    render() {
-    const todos = this.state.todos.map( t => {
+    const todoList = todos.map( t => {
         return(
             <Box sx={{ flexGrow: 1, overflow: 'hidden', px: 3 }}>
                 <Todo
@@ -62,15 +50,15 @@ class TodoApp extends Component {
                 id={t.id}
                 todo={t.todo}
                 completed={t.completed}
-                removeTodo={this.remove}
-                toggleTodo={this.toggleComplete}
-                updateTodo={this.update}
+                removeTodo={remove}
+                toggleTodo={toggleComplete}
+                updateTodo={update}
                 />
             </Box>
         );
     });
 
-        return (
+    return (
             <div>
                 <AppBar 
                     position="static"
@@ -83,13 +71,12 @@ class TodoApp extends Component {
                         </Typography>
                     </Toolbar>
                 </AppBar>
-                <NewTodoForm createTodo={this.create}/>
+                <NewTodoForm createTodo={create}/>
                 <div>
-                    {todos}
+                    {todoList}
                 </div>
             </div>
-        );
-    }
+    );
 }
 
 export default TodoApp;

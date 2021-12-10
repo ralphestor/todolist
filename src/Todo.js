@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Checkbox from '@mui/material/Checkbox';
@@ -13,132 +13,116 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import './Todo.css'
 
-class Todo extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            isEditing: false,
-            todo: this.props.todo
-        }
-        this.handleRemove = this.handleRemove.bind(this)
-        this.handleToggle = this.handleToggle.bind(this)
-        this.editToggle = this.editToggle.bind(this)
-        this.handleEditChange = this.handleEditChange.bind(this)
-        this.handleUpdate = this.handleUpdate.bind(this)
-    }
+function Todo(props) {
+    const [isEditing, setIsEditing] = useState(false);
+    const [todo, setTodo] = useState(props.todo);
 
-    handleRemove(){
-        this.props.removeTodo(this.props.id);
+    function handleRemove(){
+        props.removeTodo(props.id);
     }
-    handleToggle(){
-        this.props.toggleTodo(this.props.id);
+    function handleToggle(){
+        props.toggleTodo(props.id);
     }
-    editToggle(){
-        this.setState({isEditing: !this.state.isEditing, todo: this.props.todo});
+    function editToggle(){
+        setIsEditing(!isEditing);
+        setTodo(props.todo);
     }
-    handleEditChange(evt){
-        this.setState({
-            todo: evt.target.value
-        })
+    function handleEditChange(evt){
+        setTodo(evt.target.value);
     }
-    handleUpdate(evt) {
-        evt.preventDefault();git 
-        this.props.updateTodo(this.props.id, this.state.todo);
-        this.setState({ isEditing: false });
+    function handleUpdate(evt) {
+        evt.preventDefault(); 
+        props.updateTodo(props.id, todo);
+        setIsEditing(!isEditing);
     }
 
 
-    render() {
-        let result;
+    let result; 
         
-        if(this.state.isEditing) {
-            result = (
-                <form onSubmit={this.handleUpdate}>
-                    <TextField fullWidth label="Edit Todo" id="fullWidth" defaultValue={this.props.todo} onChange={this.handleEditChange}/>
-                    <Stack direction="row" spacing={1} sx={{ display: "flex", justifyContent: "center"}}>
-                        <IconButton 
-                            type="submit"
-                            aria-label="edit"
+    if(isEditing) {
+        result = (
+            <form onSubmit={handleUpdate}>
+                <TextField fullWidth label="Edit Todo" id="fullWidth" defaultValue={props.todo} onChange={handleEditChange}/>
+                <Stack direction="row" spacing={1} sx={{ display: "flex", justifyContent: "center"}}>
+                    <IconButton 
+                        type="submit"
+                        aria-label="edit"
+                        sx= {{
+                            color: "#6baa6b"
+                        }}
+                    >
+                        <CheckCircleIcon 
                             sx= {{
-                                color: "#6baa6b"
+                                width: "30px",
+                                height: "30px"
                             }}
-                        >
-                            <CheckCircleIcon 
-                                sx= {{
-                                    width: "30px",
-                                    height: "30px"
-                                }}
-                            />
-                        </IconButton>
-                        <IconButton 
-                            onClick={this.editToggle}
-                            aria-label="cancel"
-                            sx= {{
-                                color: "#e25555"
-                            }}
-                        >
-                            <CancelIcon
-                                sx= {{
-                                    width: "30px",
-                                    height: "30px"
-                                }}
-                            />
-                        </IconButton>
-                    </Stack>
-                </form>
-            )
-        } else {
-            result = (
-                <Grid 
-                    container 
-                    wrap="nowrap" 
-                    spacing={2}
-                    className={this.props.completed ? "completed" : ""}
-                >
-                    <Grid item xs={1.5}>
-                        <Checkbox
-                            sx={{
-                            color: teal[800],
-                            '&.Mui-checked': {
-                                color: teal[600],
-                            },
-                            }}
-                            onClick={this.handleToggle}
-                            checked={this.props.completed ? true : false}
                         />
-                    </Grid>
-                    <Grid item zeroMinWidth  className="textContain" xs={7.5}>
-                        <Typography noWrap>
-                            {this.props.todo}
-                        </Typography>
-                    </Grid>
-                    <Grid item zeroMinWidth xs={1.5}>
-                        <IconButton aria-label='Edit' onClick={this.editToggle}>
-                            <EditIcon />
-                        </IconButton>
-                    </Grid>
-                    <Grid item zeroMinWidth xs={1.5}>
-                        <IconButton aria-label='Delete' onClick={this.handleRemove}>
-                            <DeleteIcon />
-                        </IconButton>
-                    </Grid>
+                    </IconButton>
+                    <IconButton 
+                        onClick={editToggle}
+                        aria-label="cancel"
+                        sx= {{
+                            color: "#e25555"
+                        }}
+                    >
+                        <CancelIcon
+                            sx= {{
+                                width: "30px",
+                                height: "30px"
+                            }}
+                        />
+                    </IconButton>
+                </Stack>
+            </form>
+        )
+    } else {
+        result = (
+            <Grid 
+                container 
+                wrap="nowrap" 
+                spacing={2}
+                className={props.completed ? "completed" : ""}
+            >
+                <Grid item xs={1.5}>
+                    <Checkbox
+                        sx={{
+                        color: teal[800],
+                        '&.Mui-checked': {
+                            color: teal[600],
+                        },
+                        }}
+                        onClick={handleToggle}
+                        checked={props.completed ? true : false}
+                    />
                 </Grid>
-            )
-        }
-    
-
-
-
-        return (
-            <div>
-                <Paper 
-                    sx={{ maxWidth: 400, my: 1, mx: 'auto', p: 2 }} 
-                >
-                    {result}
-                </Paper>
-            </div>
-        );
+                <Grid item zeroMinWidth  className="textContain" xs={7.5}>
+                    <Typography noWrap>
+                        {props.todo}
+                    </Typography>
+                </Grid>
+                <Grid item zeroMinWidth xs={1.5}>
+                    <IconButton aria-label='Edit' onClick={editToggle}>
+                        <EditIcon />
+                    </IconButton>
+                </Grid>
+                <Grid item zeroMinWidth xs={1.5}>
+                    <IconButton aria-label='Delete' onClick={handleRemove}>
+                        <DeleteIcon />
+                    </IconButton>
+                </Grid>
+            </Grid>
+        )
     }
+
+    return (
+        <div>
+            <Paper 
+                sx={{ maxWidth: 400, my: 1, mx: 'auto', p: 2 }} 
+            >
+                {result}
+            </Paper>
+        </div>
+    );
 }
 
 export default Todo;
