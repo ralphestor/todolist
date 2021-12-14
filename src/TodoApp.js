@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -12,7 +12,12 @@ import Todo from './Todo';
 
 
 function TodoApp() {
-    const [todos, setTodos] = useState([]);
+    const initialTodos = JSON.parse(window.localStorage.getItem("todos") || "[]");
+    const [todos, setTodos] = useState(initialTodos);
+
+    useEffect(() => {
+        window.localStorage.setItem("todos", JSON.stringify(todos));
+      }, [todos]);
 
     function remove(id) {
         setTodos(todos.filter(t => t.id !== id));
