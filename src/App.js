@@ -1,13 +1,17 @@
 import './App.css';
+import { Helmet } from "react-helmet";
 import TodoApp from './TodoApp';
 
 
 
 function App() {
   return (
-      <div>
-          <TodoApp/>
-      </div>
+      <>
+        <Helmet>
+          <title>TodoApp</title>
+        </Helmet>
+        <TodoApp/>
+      </>
     );
 }
 
